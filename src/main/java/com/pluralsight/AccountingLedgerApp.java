@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class AccountingLedgerApp {
 
     public static void main(String[] args) {
-        //how do I keep this program running until the user exits
+
         Scanner theScanner = new Scanner(System.in);
         String sn;
 
@@ -23,6 +23,8 @@ public class AccountingLedgerApp {
 
             sn = theScanner.nextLine().toUpperCase();
 
+            /*This will as if they want to deposit anything. Then it asks for details
+            it ask for date, time,description, vendor and amount. It will log all of this to the CSV */
 
             switch (sn) {
                 case "D":
@@ -50,6 +52,9 @@ public class AccountingLedgerApp {
                     break;
 
 
+                    /* This will as if they want to make a payment. Then it asks for details
+                    it ask for date, time,description, vendor and amount. It will log all of this to the CSV */
+
                 case "P":
                     System.out.println("Make a payment");
 
@@ -68,11 +73,16 @@ public class AccountingLedgerApp {
                     System.out.println("Enter amount: ");
                     double payAmount = Double.parseDouble(theScanner.nextLine());
 
-                    Transactions payment = new Transactions(payDate, payTime, payDesc, payVendor, payAmount);
+                    Transactions payment = new Transactions(payDate, payTime, payDesc, payVendor, -Math.abs(payAmount));
                     TransactionFileHelper.saveTransactions(payment);
 
                     System.out.println("Payment saved");
                     break;
+
+
+                    /*This asks if they want to view the ledger for any of the options av, all transactions, deposits only,
+                    or payments only anything. Then it asks for details
+                     It will log all of this to the CSV */
 
                 case "L":
                     System.out.println("View ledger");
@@ -82,8 +92,16 @@ public class AccountingLedgerApp {
 
                     System.out.println("Select ledger options");
                     String ledgerOption = theScanner.nextLine().toUpperCase();
-                    // stored in ledger entry reads the list of transactions from the CSV through the file helper
+
+                    /* stored in ledger entry reads the list of transactions from the CSV through the file helper*/
                     List<Transactions> allTransactions = TransactionFileHelper.readTransactions();
+
+
+                    /* The if else statement will ask if the user wants to select either of the following options,
+                    if incorrect selection it will give error.
+                    If not and they want to exit it will extit.
+                    It will continue to loop if not. /*
+                     */
 
                     if (ledgerOption.equals("A")) {
                         System.out.println("All Transactions:");
@@ -93,7 +111,7 @@ public class AccountingLedgerApp {
                     } else if (ledgerOption.equals("D")) {
                         System.out.println("Deposits:");
                         for (Transactions t : allTransactions) {
-                            if (t.getAmount() > 0) {
+                            if (t.getAmount() < 0) {
                                 System.out.println(t.toCSV());
                             }
                         }
